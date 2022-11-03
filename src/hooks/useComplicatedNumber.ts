@@ -15,14 +15,13 @@ export const useComplicatedNumber = (initialValue: number): UseComplicatedNumber
 
 	const value = createMemo(() => +_value() || 0);
 	const setValue = (value: number) => {
-		const roundedValue = Math.round(+value);
+		const roundedValue = Math.max(0, Math.round(+value));
 		_setValue(roundedValue.toString());
 	};
 
 	const serialize = () => _setValue((c) => (+c).toString());
 	const add = (value: number) => {
-		const newValue = Math.max(0, +_value() + value);
-		setValue(newValue);
+		setValue(+_value() + value);
 	};
 
 	return [value, setValue, { serialize, add }];
