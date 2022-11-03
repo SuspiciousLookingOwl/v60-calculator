@@ -53,7 +53,7 @@ const App: Component = () => {
 							onChange={coffee.serialize}
 							unit="gr"
 						/>
-						<Adjuster steps={[-25, -15, -5, 5, 15, 25]} onAdjust={(v) => onCoffeeChange((c) => c + v)} />
+						<Adjuster steps={[-10, -5, -1, 1, 5, 10]} onAdjust={(v) => onCoffeeChange((c) => c + v)} />
 					</div>
 				</div>
 
