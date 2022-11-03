@@ -1,4 +1,4 @@
-import { Component } from "solid-js";
+import { Component, createEffect, createSignal } from "solid-js";
 import { Adjuster, FancyInput, Icon } from "./components";
 import { useBrewCalculator, useComplicatedNumber } from "./hooks";
 
@@ -6,6 +6,9 @@ const App: Component = () => {
 	const [waterValue, setWaterValue, water] = useComplicatedNumber(500);
 	const [coffeeValue, setCoffeeValue, coffee] = useComplicatedNumber(30);
 	const brew = useBrewCalculator(waterValue, coffeeValue);
+	const [timerStage, setTimerStage] = createSignal(0);
+	const [timer, setTimer] = createSignal(0);
+	let timerInterval = 0;
 
 	const onWaterChange = (value: number | ((v: number) => number)) => {
 		const finalValue = typeof value === "number" ? value : value(waterValue());
@@ -18,6 +21,29 @@ const App: Component = () => {
 		setCoffeeValue(finalValue);
 		setWaterValue(Math.round((finalValue / 60) * 1000));
 	};
+
+	const startTimer = () => {
+		if (timerInterval) return;
+		setTimerStage(1);
+		setTimer(0);
+		timerInterval = setInterval(() => setTimer((t) => t + 0.1), 100);
+	};
+
+	const resetTimer = (clearStage = false) => {
+		setTimer(0);
+		clearInterval(timerInterval);
+		timerInterval = 0;
+		if (clearStage) setTimerStage(0);
+	};
+
+	createEffect(() => {
+		if (timer() >= 135) {
+			setTimerStage(5);
+			resetTimer();
+		} else if (timer() >= 105) setTimerStage(4);
+		else if (timer() >= 75) setTimerStage(3);
+		else if (timer() >= 45) setTimerStage(2);
+	});
 
 	return (
 		<div class="flex flex-col text-neutral-800">
@@ -58,17 +84,49 @@ const App: Component = () => {
 				</div>
 
 				<div class="mt-24 px-12">
-					<div class="relative w-full border-b-2 border-neutral-300 left-1">
+					<div class="flex flex-row space-x-1 ml-1 mb-2">
+						<button onClick={startTimer}>
+							<Icon name="play" extraClass="w-6 h-6 fill-neutral-500" />
+						</button>
+						<button onClick={() => resetTimer(true)}>
+							<Icon name="restart" extraClass="w-5 h-5 fill-neutral-500" />
+						</button>
+					</div>
+					<div class="relative w-full border-b-4 border-neutral-300 left-2">
+						<div
+							class="absolute top-0 left-0 border-b-4 border-amber-700 w-0 transition-all ease-linear"
+							style={{
+								width: `${Math.min(timerStage(), 4) * 25}%`,
+								"transition-duration": timerStage() === 0 ? "0s" : timerStage() === 1 ? "45s" : "30s",
+							}}
+						/>
+
 						<Icon
 							name="coffee"
 							extraClass="absolute fill-neutral-200 w-16 h-16 bottom-4 left-[calc(100%-1.5rem)]"
+							extraClassList={{ "fill-amber-700": timerStage() >= 5 }}
 						/>
 
-						<div class="absolute w-2 h-2 bg-neutral-300 rounded-full -top-[0.175rem]" />
-						<div class="absolute w-2 h-2 bg-neutral-300 rounded-full -top-[0.175rem] left-[25%]" />
-						<div class="absolute w-2 h-2 bg-neutral-300 rounded-full -top-[0.175rem] left-[50%]" />
-						<div class="absolute w-2 h-2 bg-neutral-300 rounded-full -top-[0.175rem] left-[75%]" />
-						<div class="absolute w-2 h-2 bg-neutral-300 rounded-full -top-[0.175rem] left-[100%]" />
+						<div
+							class="absolute w-3 h-3 bg-neutral-300 rounded-full -top-[0.25rem]"
+							classList={{ "bg-amber-700": timerStage() >= 1 }}
+						/>
+						<div
+							class="absolute w-3 h-3 bg-neutral-300 rounded-full -top-[0.25rem] left-[25%]"
+							classList={{ "bg-amber-700": timerStage() >= 2 }}
+						/>
+						<div
+							class="absolute w-3 h-3 bg-neutral-300 rounded-full -top-[0.25rem] left-[50%]"
+							classList={{ "bg-amber-700": timerStage() >= 3 }}
+						/>
+						<div
+							class="absolute w-3 h-3 bg-neutral-300 rounded-full -top-[0.25rem] left-[75%]"
+							classList={{ "bg-amber-700": timerStage() >= 4 }}
+						/>
+						<div
+							class="absolute w-3 h-3 bg-neutral-300 rounded-full -top-[0.25rem] left-[100%]"
+							classList={{ "bg-amber-700": timerStage() >= 5 }}
+						/>
 					</div>
 
 					<div class="relative w-full grid grid-cols-4 mt-4">
