@@ -18,8 +18,11 @@ export const BrewTimeline: Component<Props> = (props) => {
 
 	const startTimer = () => {
 		if (timer.isRunning()) return;
-		setTimerStage(1);
-		timer.start();
+		setTimerStage(0);
+		setTimeout(() => {
+			timer.start();
+			setTimerStage(1);
+		}, 0);
 	};
 
 	const resetTimer = () => {
@@ -51,13 +54,10 @@ export const BrewTimeline: Component<Props> = (props) => {
 	return (
 		<>
 			<div class="flex flex-row space-x-1 ml-1 mb-2">
-				<button onClick={startTimer}>
-					<Icon name="play" extraClass="w-6 h-6 fill-neutral-400 hover:fill-neutral-500  transition-colors" />
-				</button>
-				<button onClick={resetTimer}>
+				<button onClick={() => (timer.isRunning() ? resetTimer() : startTimer())}>
 					<Icon
-						name="restart"
-						extraClass="w-5 h-5 fill-neutral-400 hover:fill-neutral-500 transition-colors"
+						name={timer.isRunning() ? "restart" : "play"}
+						extraClass="w-6 h-6 fill-neutral-400 hover:fill-neutral-500  transition-colors"
 					/>
 				</button>
 			</div>
@@ -66,6 +66,7 @@ export const BrewTimeline: Component<Props> = (props) => {
 					class="absolute top-0 left-0 border-b-4 border-amber-700 w-0 transition-all ease-linear"
 					style={{
 						width: `${Math.min(timerStage(), 4) * 25}%`,
+						// TODO use another approach, animation seems to be paused when tab is inactive
 						"transition-duration": timerStage() === 0 ? "0s" : timerStage() === 1 ? "45s" : "30s",
 					}}
 				/>
