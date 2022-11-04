@@ -1,4 +1,4 @@
-import { Component, createEffect, createSignal, onMount } from "solid-js";
+import { Component, createEffect, createSignal, For, onMount } from "solid-js";
 import { useBrewCalculator, useTimer } from "../../hooks";
 import { Icon } from "../Icon";
 
@@ -71,26 +71,15 @@ export const BrewTimeline: Component<Props> = (props) => {
 					}}
 				/>
 
-				<div
-					class="absolute w-3 h-3 bg-neutral-300 rounded-full -top-[0.25rem]"
-					classList={{ "bg-amber-700": timerStage() >= 1 }}
-				/>
-				<div
-					class="absolute w-3 h-3 bg-neutral-300 rounded-full -top-[0.25rem] left-[25%]"
-					classList={{ "bg-amber-700": timerStage() >= 2 }}
-				/>
-				<div
-					class="absolute w-3 h-3 bg-neutral-300 rounded-full -top-[0.25rem] left-[50%]"
-					classList={{ "bg-amber-700": timerStage() >= 3 }}
-				/>
-				<div
-					class="absolute w-3 h-3 bg-neutral-300 rounded-full -top-[0.25rem] left-[75%]"
-					classList={{ "bg-amber-700": timerStage() >= 4 }}
-				/>
-				<div
-					class="absolute w-3 h-3 bg-neutral-300 rounded-full -top-[0.25rem] left-[100%]"
-					classList={{ "bg-amber-700": timerStage() >= 5 }}
-				/>
+				<For each={[0, 1, 2, 3, 4]}>
+					{(i) => (
+						<div
+							class="absolute w-3 h-3 bg-neutral-300 rounded-full -top-[0.25rem]"
+							classList={{ "bg-amber-700": timerStage() >= i + 1 }}
+							style={{ left: `${i * 25}%` }}
+						/>
+					)}
+				</For>
 
 				<Icon
 					name="coffee"
