@@ -1,14 +1,13 @@
 import { Component, createEffect, createSignal } from "solid-js";
 import { Adjuster, FancyInput, Icon } from "./components";
-import { useBrewCalculator, useComplicatedNumber } from "./hooks";
+import { useBrewCalculator, useComplicatedNumber, useTimer } from "./hooks";
 
 const App: Component = () => {
 	const [waterValue, setWaterValue, water] = useComplicatedNumber(500);
 	const [coffeeValue, setCoffeeValue, coffee] = useComplicatedNumber(30);
-	const brew = useBrewCalculator(waterValue, coffeeValue);
 	const [timerStage, setTimerStage] = createSignal(0);
-	const [timer, setTimer] = createSignal(0);
-	let timerInterval = 0;
+	const brew = useBrewCalculator(waterValue, coffeeValue);
+	const timer = useTimer();
 
 	const onWaterChange = (value: number | ((v: number) => number)) => {
 		const finalValue = typeof value === "number" ? value : value(waterValue());
@@ -23,26 +22,23 @@ const App: Component = () => {
 	};
 
 	const startTimer = () => {
-		if (timerInterval) return;
+		if (timer.isRunning()) return;
 		setTimerStage(1);
-		setTimer(0);
-		timerInterval = setInterval(() => setTimer((t) => t + 0.1), 100);
+		timer.start();
 	};
 
-	const resetTimer = (clearStage = false) => {
-		setTimer(0);
-		clearInterval(timerInterval);
-		timerInterval = 0;
-		if (clearStage) setTimerStage(0);
+	const resetTimer = () => {
+		timer.reset();
+		setTimerStage(0);
 	};
 
 	createEffect(() => {
-		if (timer() >= 135) {
+		if (timer.value() >= 135) {
 			setTimerStage(5);
-			resetTimer();
-		} else if (timer() >= 105) setTimerStage(4);
-		else if (timer() >= 75) setTimerStage(3);
-		else if (timer() >= 45) setTimerStage(2);
+			timer.reset();
+		} else if (timer.value() >= 105) setTimerStage(4);
+		else if (timer.value() >= 75) setTimerStage(3);
+		else if (timer.value() >= 45) setTimerStage(2);
 	});
 
 	return (
@@ -88,7 +84,7 @@ const App: Component = () => {
 						<button onClick={startTimer}>
 							<Icon name="play" extraClass="w-6 h-6 fill-neutral-500" />
 						</button>
-						<button onClick={() => resetTimer(true)}>
+						<button onClick={resetTimer}>
 							<Icon name="restart" extraClass="w-5 h-5 fill-neutral-500" />
 						</button>
 					</div>
