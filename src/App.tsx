@@ -9,7 +9,7 @@ const App: Component = () => {
 	return (
 		<div class="flex flex-col text-neutral-800">
 			<div
-				class="h-64 flex justify-center items-center"
+				class="h-64 flex justify-center items-center bg-no-repeat bg-cover"
 				style={{
 					"background-image": "url(./img/coffee-bg-min.jpg)",
 				}}
