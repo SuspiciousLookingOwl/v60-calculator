@@ -1,11 +1,11 @@
 import { Component, For } from "solid-js";
 
-type Props = {
+export type AdjusterProps = {
 	steps: number[];
 	onAdjust: (value: number) => void;
 };
 
-export const Adjuster: Component<Props> = (props) => {
+export const Adjuster: Component<AdjusterProps> = (props) => {
 	return (
 		<div class="border border-neutral-300 rounded-lg flex flex-row justify-evenly divide-x mt-6 w-max mx-auto">
 			<For each={props.steps}>
