@@ -16,7 +16,7 @@ export const FancyInput: Component<FancyInputProps> = (props) => {
 				<input
 					{...props}
 					type="text"
-					pattern="[0-9]*"
+					onInput={(e) => (e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, ""))}
 					value={props.value}
 					style={{ width: props.value.toString().length + 2 + "ch" }}
 					class="text-[6rem] border-b border-neutral-300 text-center text-neutral-600 font-light outline-none pl-4"
