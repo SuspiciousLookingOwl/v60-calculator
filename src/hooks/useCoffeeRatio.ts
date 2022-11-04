@@ -7,13 +7,13 @@ export const useCoffeeRatio = () => {
 	const setWaterValue = (value: number | ((v: number) => number)) => {
 		const finalValue = typeof value === "number" ? value : value(waterValue());
 		_setWaterValue(finalValue);
-		_setCoffeeValue(Math.round((finalValue / 1000) * 60));
+		_setCoffeeValue((finalValue / 1000) * 60);
 	};
 
 	const setCoffeeValue = (value: number | ((v: number) => number)) => {
 		const finalValue = typeof value === "number" ? value : value(coffeeValue());
 		_setCoffeeValue(finalValue);
-		_setWaterValue(Math.round((finalValue / 60) * 1000));
+		_setWaterValue((finalValue / 60) * 1000);
 	};
 
 	return {
