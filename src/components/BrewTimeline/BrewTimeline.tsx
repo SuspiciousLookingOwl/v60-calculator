@@ -94,8 +94,8 @@ export const BrewTimeline: Component<Props> = (props) => {
 
 				<Icon
 					name="coffee"
-					extraClass="absolute fill-neutral-200 w-16 h-16 bottom-4 left-[calc(100%-1.5rem)]"
-					extraClassList={{ "fill-amber-700": timerStage() >= 5 }}
+					extraClass="absolute fill-neutral-300 w-16 h-16 bottom-4 left-[calc(100%-1.5rem)]"
+					extraClassList={{ "fill-amber-700 animate-pulse": timerStage() >= 5 }}
 				/>
 			</div>
 
