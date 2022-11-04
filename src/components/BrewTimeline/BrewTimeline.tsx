@@ -1,4 +1,4 @@
-import { Component, createEffect, createSignal } from "solid-js";
+import { Component, createEffect, createSignal, onMount } from "solid-js";
 import { useBrewCalculator, useTimer } from "../../hooks";
 import { Icon } from "../Icon";
 
@@ -14,6 +14,7 @@ export const BrewTimeline: Component<Props> = (props) => {
 		() => props.coffee
 	);
 	const timer = useTimer();
+	const ding = new Audio("./audio/ding.mp3");
 
 	const startTimer = () => {
 		if (timer.isRunning()) return;
@@ -27,12 +28,24 @@ export const BrewTimeline: Component<Props> = (props) => {
 	};
 
 	createEffect(() => {
-		if (timer.value() >= 135) {
+		if (timer.value() === 135) {
 			setTimerStage(5);
+			ding.play();
 			timer.reset();
-		} else if (timer.value() >= 105) setTimerStage(4);
-		else if (timer.value() >= 75) setTimerStage(3);
-		else if (timer.value() >= 45) setTimerStage(2);
+		} else if (timer.value() === 105) {
+			setTimerStage(4);
+			ding.play();
+		} else if (timer.value() === 75) {
+			setTimerStage(3);
+			ding.play();
+		} else if (timer.value() === 45) {
+			setTimerStage(2);
+			ding.play();
+		}
+	});
+
+	onMount(() => {
+		ding.volume = 0.2;
 	});
 
 	return (
